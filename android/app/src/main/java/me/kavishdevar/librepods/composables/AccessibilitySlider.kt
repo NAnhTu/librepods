@@ -49,10 +49,11 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccessibilitySlider(
-    label: String,
+    label: String? = null,
     value: Float,
     onValueChange: (Float) -> Unit,
-    valueRange: ClosedFloatingPointRange<Float>
+    valueRange: ClosedFloatingPointRange<Float>,
+    widthFrac: Float = 1f
 ) {
     val isDarkTheme = isSystemInDarkTheme()
 
@@ -62,18 +63,20 @@ fun AccessibilitySlider(
     val labelTextColor = if (isDarkTheme) Color.White else Color.Black
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(widthFrac),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = label,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = labelTextColor,
-                fontFamily = androidx.compose.ui.text.font.FontFamily(Font(R.font.sf_pro))
+        if (label != null) {
+            Text(
+                text = label,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = labelTextColor,
+                    fontFamily = androidx.compose.ui.text.font.FontFamily(Font(R.font.sf_pro))
+                )
             )
-        )
+        }
 
         Slider(
             value = value,

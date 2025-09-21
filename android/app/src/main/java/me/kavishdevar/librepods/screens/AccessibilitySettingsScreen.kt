@@ -111,9 +111,9 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.io.encoding.ExperimentalEncodingApi
 
-var debounceJob: Job? = null
-var phoneMediaDebounceJob: Job? = null
-const val TAG = "AccessibilitySettings"
+private var debounceJob: Job? = null
+private var phoneMediaDebounceJob: Job? = null
+private const val TAG = "AccessibilitySettings"
 
 @SuppressLint("DefaultLocale")
 @ExperimentalHazeMaterialsApi
@@ -150,7 +150,7 @@ fun AccessibilitySettingsScreen() {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Accessibility Settings",
+                        text = stringResource(R.string.accessibility),
                         style = TextStyle(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Medium,
@@ -452,79 +452,232 @@ fun AccessibilitySettingsScreen() {
             // Only show transparency mode section if SDP offset is available
             if (isSdpOffsetAvailable.value) {
                 AccessibilityToggle(
-                    text = "Transparency Mode",
+                    text = stringResource(R.string.transparency_mode),
                     mutableState = enabled,
-                    independent = true
-                )
-                Text(
-                    text = stringResource(R.string.customize_transparency_mode_description),
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        color = textColor.copy(0.6f),
-                        lineHeight = 14.sp,
-                    ),
-                    modifier = Modifier
-                        .padding(horizontal = 2.dp)
+                    independent = true,
+                    description = stringResource(R.string.customize_transparency_mode_description)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Customize Transparency Mode".uppercase(),
+                    text = stringResource(R.string.amplification).uppercase(),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Light,
                         color = textColor.copy(alpha = 0.6f),
                         fontFamily = FontFamily(Font(R.font.sf_pro))
                     ),
-                    modifier = Modifier.padding(8.dp, bottom = 2.dp)
+                    modifier = Modifier.padding(8.dp, bottom = 0.dp)
                 )
-                Column(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(backgroundColor, RoundedCornerShape(14.dp))
-                        .padding(8.dp)
+                        .padding(horizontal = 8.dp, vertical = 0.dp)
+                        .height(55.dp)
                 ) {
-                    AccessibilitySlider(
-                        label = "Amplification",
-                        valueRange = -1f..1f,
-                        value = amplificationSliderValue.floatValue,
-                        onValueChange = {
-                            amplificationSliderValue.floatValue = snapIfClose(it, listOf(-0.5f, -0.25f, 0f, 0.25f, 0.5f))
-                        },
-                    )
-                    AccessibilitySlider(
-                        label = "Balance",
-                        valueRange = -1f..1f,
-                        value = balanceSliderValue.floatValue,
-                        onValueChange = {
-                            balanceSliderValue.floatValue = snapIfClose(it, listOf(0f))
-                        },
-                    )
-                    AccessibilitySlider(
-                        label = "Tone",
-                        valueRange = -1f..1f,
-                        value = toneSliderValue.floatValue,
-                        onValueChange = {
-                            toneSliderValue.floatValue = snapIfClose(it, listOf(0f))
-                        },
-                    )
-                    AccessibilitySlider(
-                        label = "Ambient Noise Reduction",
-                        valueRange = 0f..1f,
-                        value = ambientNoiseReductionSliderValue.floatValue,
-                        onValueChange = {
-                            ambientNoiseReductionSliderValue.floatValue = snapIfClose(it, listOf(0.1f, 0.3f, 0.5f, 0.7f, 0.9f))
-                        },
-                    )
-                    AccessibilityToggle(
-                        text = "Conversation Boost",
-                        mutableState = conversationBoostEnabled
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Text(
+                            text = "􀊥",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Normal,
+                                color = labelTextColor,
+                                fontFamily = FontFamily(Font(R.font.sf_pro))
+                            ),
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                        AccessibilitySlider(
+                            valueRange = -1f..1f,
+                            value = amplificationSliderValue.floatValue,
+                            onValueChange = {
+                                amplificationSliderValue.floatValue = snapIfClose(it, listOf(-0.5f, -0.25f, 0f, 0.25f, 0.5f))
+                            },
+                            widthFrac = 0.90f,
+                        )
+                        Text(
+                            text = "􀊩",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Normal,
+                                color = labelTextColor,
+                                fontFamily = FontFamily(Font(R.font.sf_pro))
+                            ),
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.height(2.dp))
+
+                Text(
+                    text = stringResource(R.string.balance).uppercase(),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Light,
+                        color = textColor.copy(alpha = 0.6f),
+                        fontFamily = FontFamily(Font(R.font.sf_pro))
+                    ),
+                    modifier = Modifier.padding(8.dp, bottom = 0.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(backgroundColor, RoundedCornerShape(14.dp))
+                        .padding(horizontal = 8.dp, vertical = 0.dp)
+                ) {
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = stringResource(R.string.left),
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    color = labelTextColor,
+                                    fontFamily = FontFamily(Font(R.font.sf_pro))
+                                )
+                            )
+                            Text(
+                                text = stringResource(R.string.right),
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    color = labelTextColor,
+                                    fontFamily = FontFamily(Font(R.font.sf_pro))
+                                )
+                            )
+                        }
+                        AccessibilitySlider(
+                            valueRange = -1f..1f,
+                            value = balanceSliderValue.floatValue,
+                            onValueChange = {
+                                balanceSliderValue.floatValue = snapIfClose(it, listOf(0f))
+                            },
+                        )
+                    }
+                }
+
+                Text(
+                    text = stringResource(R.string.tone).uppercase(),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Light,
+                        color = textColor.copy(alpha = 0.6f),
+                        fontFamily = FontFamily(Font(R.font.sf_pro))
+                    ),
+                    modifier = Modifier.padding(8.dp, bottom = 0.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(backgroundColor, RoundedCornerShape(14.dp))
+                        .padding(horizontal = 8.dp, vertical = 0.dp)
+                ) {
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = stringResource(R.string.darker),
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    color = labelTextColor,
+                                    fontFamily = FontFamily(Font(R.font.sf_pro))
+                                )
+                            )
+                            Text(
+                                text = stringResource(R.string.brighter),
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    color = labelTextColor,
+                                    fontFamily = FontFamily(Font(R.font.sf_pro))
+                                )
+                            )
+                        }
+                        AccessibilitySlider(
+                            valueRange = -1f..1f,
+                            value = toneSliderValue.floatValue,
+                            onValueChange = {
+                                toneSliderValue.floatValue = snapIfClose(it, listOf(0f))
+                            },
+                        )
+                    }
+                }
+
+                Text(
+                    text = stringResource(R.string.ambient_noise_reduction).uppercase(),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Light,
+                        color = textColor.copy(alpha = 0.6f),
+                        fontFamily = FontFamily(Font(R.font.sf_pro))
+                    ),
+                    modifier = Modifier.padding(8.dp, bottom = 0.dp)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(backgroundColor, RoundedCornerShape(14.dp))
+                        .padding(horizontal = 8.dp, vertical = 0.dp)
+                ) {
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = stringResource(R.string.less),
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    color = labelTextColor,
+                                    fontFamily = FontFamily(Font(R.font.sf_pro))
+                                )
+                            )
+                            Text(
+                                text = stringResource(R.string.more),
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    color = labelTextColor,
+                                    fontFamily = FontFamily(Font(R.font.sf_pro))
+                                )
+                            )
+                        }
+                        AccessibilitySlider(
+                            valueRange = 0f..1f,
+                            value = ambientNoiseReductionSliderValue.floatValue,
+                            onValueChange = {
+                                ambientNoiseReductionSliderValue.floatValue = snapIfClose(it, listOf(0.1f, 0.3f, 0.5f, 0.7f, 0.9f))
+                            },
+                        )
+                    }
+                }
+
+                AccessibilityToggle(
+                    text = stringResource(R.string.conversation_boost),
+                    mutableState = conversationBoostEnabled,
+                    independent = true,
+                    description = stringResource(R.string.conversation_boost_description)
+                )
             }
 
             Text(
-                text = "AUDIO",
+                text = stringResource(R.string.audio).uppercase(),
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Light,
@@ -542,7 +695,7 @@ fun AccessibilitySettingsScreen() {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Tone Volume",
+                    text = stringResource(R.string.tone_volume),
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.sf_pro)),
@@ -559,8 +712,8 @@ fun AccessibilitySettingsScreen() {
                 LoudSoundReductionSwitch()
 
                 DropdownMenuComponent(
-                    label = "Press Speed",
-                    options = pressSpeedOptions.values.toList(),
+                    label = stringResource(R.string.press_speed),
+                    options = listOf(stringResource(R.string.default_option), stringResource(R.string.slower), stringResource(R.string.slowest)),
                     selectedOption = selectedPressSpeed.toString(),
                     onOptionSelected = { newValue ->
                         selectedPressSpeed = newValue
@@ -572,8 +725,8 @@ fun AccessibilitySettingsScreen() {
                     textColor = textColor
                 )
                 DropdownMenuComponent(
-                    label = "Press and Hold Duration",
-                    options = pressAndHoldDurationOptions.values.toList(),
+                    label = stringResource(R.string.press_and_hold_duration),
+                    options = listOf(stringResource(R.string.default_option), stringResource(R.string.slower), stringResource(R.string.slowest)),
                     selectedOption = selectedPressAndHoldDuration.toString(),
                     onOptionSelected = { newValue ->
                         selectedPressAndHoldDuration = newValue
@@ -585,8 +738,8 @@ fun AccessibilitySettingsScreen() {
                     textColor = textColor
                 )
                 DropdownMenuComponent(
-                    label = "Volume Swipe Speed",
-                    options = volumeSwipeSpeedOptions.values.toList(),
+                    label = stringResource(R.string.volume_swipe_speed),
+                    options = listOf(stringResource(R.string.default_option), stringResource(R.string.longer), stringResource(R.string.longest)),
                     selectedOption = selectedVolumeSwipeSpeed.toString(),
                     onOptionSelected = { newValue ->
                         selectedVolumeSwipeSpeed = newValue
@@ -603,7 +756,7 @@ fun AccessibilitySettingsScreen() {
             // Only show transparency mode EQ section if SDP offset is available  
             if (isSdpOffsetAvailable.value) {
                 Text(
-                    text = "Equalizer".uppercase(),
+                    text = stringResource(R.string.equalizer).uppercase(),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Light,
@@ -687,7 +840,7 @@ fun AccessibilitySettingsScreen() {
                             )
 
                             Text(
-                                text = "Band ${i + 1}",
+                                text = stringResource(R.string.band_label, i + 1),
                                 fontSize = 12.sp,
                                 color = textColor,
                                 modifier = Modifier.padding(top = 4.dp)
@@ -700,7 +853,7 @@ fun AccessibilitySettingsScreen() {
             }
 
             Text(
-                text = "Apply EQ to".uppercase(),
+                text = stringResource(R.string.apply_eq_to).uppercase(),
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Light,
@@ -740,7 +893,7 @@ fun AccessibilitySettingsScreen() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "Phone",
+                        stringResource(R.string.phone),
                         fontSize = 16.sp,
                         color = textColor,
                         fontFamily = FontFamily(Font(R.font.sf_pro)),
@@ -791,7 +944,7 @@ fun AccessibilitySettingsScreen() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "Media",
+                        stringResource(R.string.media),
                         fontSize = 16.sp,
                         color = textColor,
                         fontFamily = FontFamily(Font(R.font.sf_pro)),
@@ -888,7 +1041,7 @@ fun AccessibilitySettingsScreen() {
                         )
 
                         Text(
-                            text = "Band ${i + 1}",
+                            text = stringResource(R.string.band_label, i + 1),
                             fontSize = 12.sp,
                             color = textColor,
                             modifier = Modifier.padding(top = 4.dp)
@@ -902,57 +1055,75 @@ fun AccessibilitySettingsScreen() {
 
 
 @Composable
-fun AccessibilityToggle(text: String, mutableState: MutableState<Boolean>, independent: Boolean = false) {
+fun AccessibilityToggle(text: String, mutableState: MutableState<Boolean>, independent: Boolean = false, description: String? = null) {
     val isDarkTheme = isSystemInDarkTheme()
     var backgroundColor by remember { mutableStateOf(if (isDarkTheme) Color(0xFF1C1C1E) else Color(0xFFFFFFFF)) }
     val animatedBackgroundColor by animateColorAsState(targetValue = backgroundColor, animationSpec = tween(durationMillis = 500))
     val textColor = if (isDarkTheme) Color.White else Color.Black
-    val boxPaddings = if (independent) 2.dp else 4.dp
     val cornerShape = if (independent) RoundedCornerShape(14.dp) else RoundedCornerShape(0.dp)
-    Box (
+
+    Column(
         modifier = Modifier
-            .padding(vertical = boxPaddings)
-            .background(animatedBackgroundColor, cornerShape)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        backgroundColor = if (isDarkTheme) Color(0x40888888) else Color(0x40D9D9D9)
-                        tryAwaitRelease()
-                        backgroundColor = if (isDarkTheme) Color(0xFF1C1C1E) else Color(0xFFFFFFFF)
-                    },
-                    onTap = {
-                        mutableState.value = !mutableState.value
-                    }
-                )
-            },
-    )
-    {
-        val rowHeight = if (independent) 55.dp else 50.dp
-        val rowPadding = if (independent) 12.dp else 4.dp
-        Row(
+            .padding(vertical = 8.dp)
+    ) {    
+        Box (
             modifier = Modifier
-                .fillMaxWidth()
-                .height(rowHeight)
-                .padding(horizontal = rowPadding),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = text,
-                modifier = Modifier.weight(1f),
-                fontSize = 16.sp,
-                color = textColor
-            )
-            StyledSwitch(
-                checked = mutableState.value,
-                onCheckedChange = {
-                    mutableState.value = it
+                .background(animatedBackgroundColor, cornerShape)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onPress = {
+                            backgroundColor = if (isDarkTheme) Color(0x40888888) else Color(0x40D9D9D9)
+                            tryAwaitRelease()
+                            backgroundColor = if (isDarkTheme) Color(0xFF1C1C1E) else Color(0xFFFFFFFF)
+                        },
+                        onTap = {
+                            mutableState.value = !mutableState.value
+                        }
+                    )
                 },
+        )
+        {
+            val rowHeight = if (independent) 55.dp else 50.dp
+            val rowPadding = if (independent) 12.dp else 4.dp
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(rowHeight)
+                    .padding(horizontal = rowPadding),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = text,
+                    modifier = Modifier.weight(1f),
+                    fontSize = 16.sp,
+                    color = textColor
+                )
+                StyledSwitch(
+                    checked = mutableState.value,
+                    onCheckedChange = {
+                        mutableState.value = it
+                    },
+                )
+            }
+        }
+        if (description != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = description,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Light,
+                    color = (if (isSystemInDarkTheme()) Color.White else Color.Black).copy(alpha = 0.6f),
+                    fontFamily = FontFamily(Font(R.font.sf_pro))
+                ),
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
             )
         }
     }
 }
 
-data class TransparencySettings (
+private data class TransparencySettings (
     val enabled: Boolean,
     val leftEQ: FloatArray,
     val rightEQ: FloatArray,
@@ -1134,7 +1305,7 @@ private fun snapIfClose(value: Float, points: List<Float>, threshold: Float = 0.
 }
 
 @Composable
-fun DropdownMenuComponent(
+private fun DropdownMenuComponent(
     label: String,
     options: List<String>,
     selectedOption: String,

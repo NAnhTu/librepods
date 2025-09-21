@@ -112,6 +112,8 @@ import me.kavishdevar.librepods.screens.AirPodsSettingsScreen
 import me.kavishdevar.librepods.screens.AppSettingsScreen
 import me.kavishdevar.librepods.screens.DebugScreen
 import me.kavishdevar.librepods.screens.HeadTrackingScreen
+import me.kavishdevar.librepods.screens.HearingAidScreen
+import me.kavishdevar.librepods.screens.HearingAidAdjustmentsScreen
 import me.kavishdevar.librepods.screens.LongPress
 import me.kavishdevar.librepods.screens.Onboarding
 import me.kavishdevar.librepods.screens.RenameScreen
@@ -379,6 +381,12 @@ fun Main() {
                 }
                 composable("onboarding") {
                     Onboarding(navController, context)
+                }
+                composable("hearing_aid") {
+                    HearingAidScreen(navController)
+                }
+                composable("hearing_aid_adjustments") {
+                    HearingAidAdjustmentsScreen(navController)
                 }
             }
         }

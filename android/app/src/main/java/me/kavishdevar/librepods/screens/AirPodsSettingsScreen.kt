@@ -358,6 +358,9 @@ fun AirPodsSettingsScreen(dev: BluetoothDevice?, service: AirPodsService,
 
                 if (!bleOnlyMode) {
                     Spacer(modifier = Modifier.height(32.dp))
+                    NavigationButton(to = "hearing_aid", stringResource(R.string.hearing_aid), navController)
+
+                    Spacer(modifier = Modifier.height(16.dp))
                     NoiseControlSettings(service = service)
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -401,17 +404,8 @@ fun AirPodsSettingsScreen(dev: BluetoothDevice?, service: AirPodsService,
                         service = service,
                         sharedPreferences = sharedPreferences,
                         default = false,
-                        controlCommandIdentifier = AACPManager.Companion.ControlCommandIdentifiers.ALLOW_OFF_OPTION
-                    )
-                    Text(
-                        text = stringResource(R.string.off_listening_mode_description),
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Light,
-                            color = (if (isSystemInDarkTheme()) Color.White else Color.Black).copy(alpha = 0.6f),
-                            fontFamily = FontFamily(Font(R.font.sf_pro))
-                        ),
-                        modifier = Modifier.padding(8.dp, top = 0.dp)
+                        controlCommandIdentifier = AACPManager.Companion.ControlCommandIdentifiers.ALLOW_OFF_OPTION,
+                        description = stringResource(R.string.off_listening_mode_description)
                     )
 
                     // an about card- everything but the version number is unknown - will add later if i find out
