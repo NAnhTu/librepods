@@ -20,6 +20,7 @@
 
 package me.kavishdevar.librepods.composables
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -70,19 +71,29 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import dev.chrisbanes.haze.HazeEffectScope
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.materials.CupertinoMaterials
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import me.kavishdevar.librepods.R
 import me.kavishdevar.librepods.services.ServiceManager
 import me.kavishdevar.librepods.utils.AACPManager
 import kotlin.io.encoding.ExperimentalEncodingApi
 
+@ExperimentalHazeMaterialsApi
 @Composable
-fun MicrophoneSettings() {
+fun MicrophoneSettings(hazeState: HazeState) {
     val isDarkTheme = isSystemInDarkTheme()
     val textColor = if (isDarkTheme) Color.White else Color.Black
     val backgroundColor = if (isDarkTheme) Color(0xFF1C1C1E) else Color(0xFFFFFFFF)
@@ -287,19 +298,22 @@ fun MicrophoneSettings() {
                             AACPManager.Companion.ControlCommandIdentifiers.MIC_MODE.value,
                             byteArrayOf(byteValue.toByte())
                         )
-                    }
+                    },
+                    hazeState = hazeState
                 )
             }
         }
     }
 }
 
+@ExperimentalHazeMaterialsApi
 @Preview
 @Composable
 fun MicrophoneSettingsPreview() {
-    MicrophoneSettings()
+    MicrophoneSettings(HazeState())
 }
 
+@ExperimentalHazeMaterialsApi
 @Composable
 fun DragSelectableDropdown(
     expanded: Boolean,
@@ -311,7 +325,8 @@ fun DragSelectableDropdown(
     onOptionSelected: (String) -> Unit,
     externalHoveredIndex: Int? = null,
     externalDragActive: Boolean = false,
-    modifier: Modifier = Modifier
+    hazeState: HazeState,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
     if (expanded) {
         val relativeOffset = touchOffset?.let { it - boxPosition } ?: Offset.Zero
@@ -328,9 +343,7 @@ fun DragSelectableDropdown(
                     modifier = modifier
                         .padding(8.dp)
                         .width(300.dp)
-                        .background(
-                            if (isSystemInDarkTheme()) Color(0xFF2C2C2E) else Color(0xFFFFFFFF)
-                        )
+                        .background(Color.Transparent)
                         .clip(RoundedCornerShape(8.dp)),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
@@ -389,14 +402,13 @@ fun DragSelectableDropdown(
                                 } else {
                                     index == hoveredIndex
                                 }
+                            val isSystemInDarkTheme = isSystemInDarkTheme()
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(itemHeight)
                                     .background(
-                                        if (isHovered) (if (isSystemInDarkTheme()) Color(0xFF3A3A3C) else Color(
-                                            0xFFD1D1D6
-                                        )) else Color.Transparent
+                                        Color.Transparent
                                     )
                                     .clickable(
                                         interactionSource = remember { MutableInteractionSource() },
@@ -405,6 +417,22 @@ fun DragSelectableDropdown(
                                         onOptionSelected(text)
                                         onDismissRequest()
                                     }
+                                    .hazeEffect(
+                                        state = hazeState,
+                                        style = CupertinoMaterials.regular(),
+                                        block = fun HazeEffectScope.() {
+                                            alpha = 1f
+                                            backgroundColor = if (isSystemInDarkTheme) {
+                                                Color(0xB02C2C2E)
+                                            } else {
+                                                Color(0xB0FFFFFF)
+                                            }
+                                            tints = if (isHovered) listOf(
+                                                HazeTint(
+                                                    color = if (isSystemInDarkTheme) Color(0x338A8A8A) else Color(0x40D9D9D9)
+                                                )
+                                            ) else listOf()
+                                        })
                                     .padding(horizontal = 12.dp),
                                 contentAlignment = Alignment.CenterStart
                             ) {
@@ -415,7 +443,11 @@ fun DragSelectableDropdown(
                                 ) {
                                     Text(
                                         text,
-                                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                                        style = TextStyle(
+                                            fontSize = 16.sp,
+                                            color = if (isSystemInDarkTheme()) Color.White else Color.Black.copy(alpha = 0.75f),
+                                            fontFamily = FontFamily(Font(R.font.sf_pro))
+                                        )
                                     )
                                     Checkbox(
                                         checked = text == selectedOption,

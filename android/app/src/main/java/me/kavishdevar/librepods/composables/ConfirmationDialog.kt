@@ -1,6 +1,7 @@
 package me.kavishdevar.librepods.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -25,7 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -51,18 +52,24 @@ fun ConfirmationDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit = { showDialog.value = false },
     hazeState: HazeState,
-    isDarkTheme: Boolean,
-    textColor: Color,
-    activeTrackColor: Color
 ) {
+    val isDarkTheme = isSystemInDarkTheme()
+    val textColor = if (isDarkTheme) Color.White else Color.Black
+    val accentColor = if (isDarkTheme) Color(0xFF007AFF) else Color(0xFF3C6DF5)
     if (showDialog.value) {
         Dialog(onDismissRequest = { showDialog.value = false }) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(if (isDarkTheme) Color(0xFF1C1C1E).copy(alpha = 0.95f) else Color.White.copy(alpha = 0.95f), RoundedCornerShape(14.dp))
+                    .fillMaxWidth(0.75f)
+                    .requiredWidthIn(min = 200.dp, max = 360.dp)
+                    .background(Color.Transparent, RoundedCornerShape(14.dp))
                     .clip(RoundedCornerShape(14.dp))
-                    .hazeEffect(hazeState, CupertinoMaterials.regular())
+                    .hazeEffect(
+                        hazeState,
+                        style = CupertinoMaterials.regular(
+                            containerColor = if (isDarkTheme) Color(0xFF1C1C1E).copy(alpha = 0.95f) else Color.White.copy(alpha = 0.95f)
+                        )
+                    )
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(24.dp))
@@ -155,7 +162,7 @@ fun ConfirmationDialog(
                                 .background(if (leftPressed) pressedColor else Color.Transparent),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(dismissText, color = activeTrackColor)
+                            Text(dismissText, color = accentColor)
                         }
                         Box(
                             modifier = Modifier
@@ -170,7 +177,7 @@ fun ConfirmationDialog(
                                 .background(if (rightPressed) pressedColor else Color.Transparent),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(confirmText, color = activeTrackColor)
+                            Text(confirmText, color = accentColor)
                         }
                     }
                 }

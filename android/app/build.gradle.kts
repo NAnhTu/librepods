@@ -62,5 +62,8 @@ dependencies {
     implementation(libs.haze)
     implementation(libs.haze.materials)
     implementation(libs.androidx.dynamicanimation)
+    implementation(libs.androidx.compose.foundation.layout)
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+    implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.aar"))))
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }

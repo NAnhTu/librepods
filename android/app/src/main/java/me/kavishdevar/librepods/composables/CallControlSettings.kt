@@ -61,13 +61,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import me.kavishdevar.librepods.R
 import me.kavishdevar.librepods.services.ServiceManager
 import me.kavishdevar.librepods.utils.AACPManager
 import kotlin.io.encoding.ExperimentalEncodingApi
 
+@ExperimentalHazeMaterialsApi
 @Composable
-fun CallControlSettings() {
+fun CallControlSettings(hazeState: HazeState) {
     val isDarkTheme = isSystemInDarkTheme()
     val textColor = if (isDarkTheme) Color.White else Color.Black
     val backgroundColor = if (isDarkTheme) Color(0xFF1C1C1E) else Color(0xFFFFFFFF)
@@ -306,7 +309,8 @@ fun CallControlSettings() {
                                 0x03
                             ) else byteArrayOf(0x00, 0x02)
                             service.aacpManager.sendControlCommand(0x24, bytes)
-                        }
+                        },
+                        hazeState = hazeState
                     )
                 }
             }
@@ -433,7 +437,8 @@ fun CallControlSettings() {
                                 0x02
                             ) else byteArrayOf(0x00, 0x03)
                             service.aacpManager.sendControlCommand(0x24, bytes)
-                        }
+                        },
+                        hazeState = hazeState
                     )
                 }
             }
@@ -441,8 +446,9 @@ fun CallControlSettings() {
     }
 }
 
+@ExperimentalHazeMaterialsApi
 @Preview
 @Composable
 fun CallControlSettingsPreview() {
-    CallControlSettings()
+    CallControlSettings(HazeState())
 }

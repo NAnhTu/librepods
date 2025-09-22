@@ -108,12 +108,14 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import me.kavishdevar.librepods.constants.AirPodsNotifications
+import me.kavishdevar.librepods.screens.AccessibilitySettingsScreen
 import me.kavishdevar.librepods.screens.AirPodsSettingsScreen
 import me.kavishdevar.librepods.screens.AppSettingsScreen
 import me.kavishdevar.librepods.screens.DebugScreen
 import me.kavishdevar.librepods.screens.HeadTrackingScreen
 import me.kavishdevar.librepods.screens.HearingAidScreen
 import me.kavishdevar.librepods.screens.HearingAidAdjustmentsScreen
+import me.kavishdevar.librepods.screens.TransparencySettingsScreen
 import me.kavishdevar.librepods.screens.LongPress
 import me.kavishdevar.librepods.screens.Onboarding
 import me.kavishdevar.librepods.screens.RenameScreen
@@ -381,6 +383,12 @@ fun Main() {
                 }
                 composable("onboarding") {
                     Onboarding(navController, context)
+                }
+                composable("accessibility") {
+                    AccessibilitySettingsScreen(navController)
+                }
+                composable("transparency_customization") {
+                    TransparencySettingsScreen(navController)
                 }
                 composable("hearing_aid") {
                     HearingAidScreen(navController)

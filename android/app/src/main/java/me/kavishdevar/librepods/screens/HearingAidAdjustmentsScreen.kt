@@ -21,37 +21,16 @@ package me.kavishdevar.librepods.screens
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -59,22 +38,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -96,17 +67,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.kavishdevar.librepods.R
-import me.kavishdevar.librepods.composables.AccessibilitySlider
+import me.kavishdevar.librepods.composables.StyledSlider
 import me.kavishdevar.librepods.composables.IndependentToggle
-import me.kavishdevar.librepods.composables.LoudSoundReductionSwitch
-import me.kavishdevar.librepods.composables.SinglePodANCSwitch
-import me.kavishdevar.librepods.composables.StyledSwitch
-import me.kavishdevar.librepods.composables.ToneVolumeSlider
-import me.kavishdevar.librepods.composables.VolumeControlSwitch
 import me.kavishdevar.librepods.services.ServiceManager
-import me.kavishdevar.librepods.utils.ATTManager
-import me.kavishdevar.librepods.utils.ATTHandles
 import me.kavishdevar.librepods.utils.AACPManager
+import me.kavishdevar.librepods.utils.ATTHandles
+import me.kavishdevar.librepods.utils.ATTManager
 import me.kavishdevar.librepods.utils.RadareOffsetFinder
 import java.io.IOException
 import java.nio.ByteBuffer
@@ -114,14 +80,13 @@ import java.nio.ByteOrder
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 private var debounceJob: Job? = null
-private var phoneMediaDebounceJob: Job? = null
 private const val TAG = "HearingAidAdjustments"
 
 @SuppressLint("DefaultLocale")
 @ExperimentalHazeMaterialsApi
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalEncodingApi::class)
 @Composable
-fun HearingAidAdjustmentsScreen(navController: NavController) {
+fun HearingAidAdjustmentsScreen(@Suppress("unused") navController: NavController) {
     val isDarkTheme = isSystemInDarkTheme()
     val textColor = if (isDarkTheme) Color.White else Color.Black
     val verticalScrollState = rememberScrollState()
@@ -131,14 +96,14 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
 
     val aacpManager = remember { ServiceManager.getService()?.aacpManager }
     val context = LocalContext.current
-    val radareOffsetFinder = remember { RadareOffsetFinder(context) }
-    val isSdpOffsetAvailable = remember { mutableStateOf(RadareOffsetFinder.isSdpOffsetAvailable()) }
+    remember { RadareOffsetFinder(context) }
+    remember { mutableStateOf(RadareOffsetFinder.isSdpOffsetAvailable()) }
     val service = ServiceManager.getService()
 
-    val trackColor = if (isDarkTheme) Color(0xFFB3B3B3) else Color(0xFF929491)
-    val activeTrackColor = if (isDarkTheme) Color(0xFF007AFF) else Color(0xFF3C6DF5)
-    val thumbColor = if (isDarkTheme) Color(0xFFFFFFFF) else Color(0xFFFFFFFF)
-    val labelTextColor = if (isDarkTheme) Color.White else Color.Black
+    if (isDarkTheme) Color(0xFFB3B3B3) else Color(0xFF929491)
+    if (isDarkTheme) Color(0xFF007AFF) else Color(0xFF3C6DF5)
+    if (isDarkTheme) Color(0xFFFFFFFF) else Color(0xFFFFFFFF)
+    if (isDarkTheme) Color.White else Color.Black
 
     Scaffold(
         containerColor = if (isSystemInDarkTheme()) Color(0xFF000000) else Color(0xFFF2F2F7),
@@ -192,9 +157,9 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
                 .verticalScroll(verticalScrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            val backgroundColor = if (isDarkTheme) Color(0xFF1C1C1E) else Color(0xFFFFFFFF)
+            if (isDarkTheme) Color(0xFF1C1C1E) else Color(0xFFFFFFFF)
 
-            val enabled = remember { mutableStateOf(false) }
+            remember { mutableStateOf(false) }
             val amplificationSliderValue = remember { mutableFloatStateOf(0.5f) }
             val balanceSliderValue = remember { mutableFloatStateOf(0.5f) }
             val toneSliderValue = remember { mutableFloatStateOf(0.5f) }
@@ -210,9 +175,9 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
             val initialLoadComplete = remember { mutableStateOf(false) }
 
             val initialReadSucceeded = remember { mutableStateOf(false) }
-            val initialReadAttempts = remember { mutableStateOf(0) }
+            val initialReadAttempts = remember { mutableIntStateOf(0) }
 
-            val HearingAidSettings = remember {
+            val hearingAidSettings = remember {
                 mutableStateOf(
                     HearingAidSettings(
                         leftEQ = eq.value,
@@ -295,7 +260,7 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
                     return@LaunchedEffect
                 }
 
-                HearingAidSettings.value = HearingAidSettings(
+                hearingAidSettings.value = HearingAidSettings(
                     leftEQ = eq.value,
                     rightEQ = eq.value,
                     leftAmplification = amplificationSliderValue.floatValue + if (balanceSliderValue.floatValue < 0) -balanceSliderValue.floatValue else 0f,
@@ -310,8 +275,8 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
                     balance = balanceSliderValue.floatValue,
                     ownVoiceAmplification = ownVoiceAmplification.floatValue
                 )
-                Log.d(TAG, "Updated settings: ${HearingAidSettings.value}")
-                sendHearingAidSettings(attManager, HearingAidSettings.value)
+                Log.d(TAG, "Updated settings: ${hearingAidSettings.value}")
+                sendHearingAidSettings(attManager, hearingAidSettings.value)
             }
 
             LaunchedEffect(Unit) {
@@ -342,7 +307,7 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
 
                     var parsedSettings: HearingAidSettings? = null
                     for (attempt in 1..3) {
-                        initialReadAttempts.value = attempt
+                        initialReadAttempts.intValue = attempt
                         try {
                             val data = attManager.read(ATTHandles.HEARING_AID)
                             parsedSettings = parseHearingAidSettingsResponse(data = data)
@@ -369,7 +334,7 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
                         ownVoiceAmplification.floatValue = parsedSettings.ownVoiceAmplification
                         initialReadSucceeded.value = true
                     } else {
-                        Log.d(TAG, "Failed to read/parse initial hearing aid settings after ${initialReadAttempts.value} attempts")
+                        Log.d(TAG, "Failed to read/parse initial hearing aid settings after ${initialReadAttempts.intValue} attempts")
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -377,10 +342,6 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
                     initialLoadComplete.value = true
                 }
             }
-
-            val isDarkThemeLocal = isSystemInDarkTheme()
-            var backgroundColorHA by remember { mutableStateOf(if (isDarkThemeLocal) Color(0xFF1C1C1E) else Color(0xFFFFFFFF)) }
-            val animatedBackgroundColorHA by animateColorAsState(targetValue = backgroundColorHA, animationSpec = tween(durationMillis = 500))
 
             Text(
                 text = stringResource(R.string.amplification).uppercase(),
@@ -392,48 +353,16 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
                 ),
                 modifier = Modifier.padding(8.dp, bottom = 0.dp)
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(backgroundColor, RoundedCornerShape(14.dp))
-                    .padding(horizontal = 8.dp, vertical = 0.dp)
-                    .height(55.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text(
-                        text = "􀊥",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = labelTextColor,
-                            fontFamily = FontFamily(Font(R.font.sf_pro))
-                        ),
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                    AccessibilitySlider(
-                        valueRange = -1f..1f,
-                        value = amplificationSliderValue.floatValue,
-                        onValueChange = {
-                            amplificationSliderValue.floatValue = snapIfClose(it, listOf(-0.5f, -0.25f, 0f, 0.25f, 0.5f))
-                        },
-                        widthFrac = 0.90f
-                    )
-                    Text(
-                        text = "􀊩",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = labelTextColor,
-                            fontFamily = FontFamily(Font(R.font.sf_pro))
-                        ),
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
-                }
-            }
+            StyledSlider(
+                valueRange = -1f..1f,
+                mutableFloatState = amplificationSliderValue,
+                onValueChange = {
+                    amplificationSliderValue.floatValue = it
+                },
+                startIcon = "􀊥",
+                endIcon = "􀊩",
+                independent = true,
+            )
 
             val sharedPreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
 
@@ -455,47 +384,17 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
                 ),
                 modifier = Modifier.padding(8.dp, bottom = 0.dp)
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(backgroundColor, RoundedCornerShape(14.dp))
-                    .padding(horizontal = 8.dp, vertical = 0.dp)
-            ) {
-                Column {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = stringResource(R.string.left),
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = labelTextColor,
-                                fontFamily = FontFamily(Font(R.font.sf_pro))
-                            )
-                        )
-                        Text(
-                            text = stringResource(R.string.right),
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = labelTextColor,
-                                fontFamily = FontFamily(Font(R.font.sf_pro))
-                            )
-                        )
-                    }
-                    AccessibilitySlider(
-                        valueRange = -1f..1f,
-                        value = balanceSliderValue.floatValue,
-                        onValueChange = {
-                            balanceSliderValue.floatValue = snapIfClose(it, listOf(0f))
-                        },
-                    )
-                }
-            }
+            StyledSlider(
+                valueRange = -1f..1f,
+                mutableFloatState = balanceSliderValue,
+                onValueChange = {
+                    balanceSliderValue.floatValue = it
+                },
+                snapPoints = listOf(0f),
+                startLabel = stringResource(R.string.left),
+                endLabel = stringResource(R.string.right),
+                independent = true,
+            )
 
             Text(
                 text = stringResource(R.string.tone).uppercase(),
@@ -507,47 +406,16 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
                 ),
                 modifier = Modifier.padding(8.dp, bottom = 0.dp)
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(backgroundColor, RoundedCornerShape(14.dp))
-                    .padding(horizontal = 8.dp, vertical = 0.dp)
-            ) {
-                Column {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = stringResource(R.string.darker),
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = labelTextColor,
-                                fontFamily = FontFamily(Font(R.font.sf_pro))
-                            )
-                        )
-                        Text(
-                            text = stringResource(R.string.brighter),
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = labelTextColor,
-                                fontFamily = FontFamily(Font(R.font.sf_pro))
-                            )
-                        )
-                    }
-                    AccessibilitySlider(
-                        valueRange = -1f..1f,
-                        value = toneSliderValue.floatValue,
-                        onValueChange = {
-                            toneSliderValue.floatValue = snapIfClose(it, listOf(0f))
-                        },
-                    )
-                }
-            }
+            StyledSlider(
+                valueRange = -1f..1f,
+                mutableFloatState = toneSliderValue,
+                onValueChange = {
+                    toneSliderValue.floatValue = it
+                },
+                startLabel = stringResource(R.string.darker),
+                endLabel = stringResource(R.string.brighter),
+                independent = true,
+            )
 
             Text(
                 text = stringResource(R.string.ambient_noise_reduction).uppercase(),
@@ -560,47 +428,16 @@ fun HearingAidAdjustmentsScreen(navController: NavController) {
                 modifier = Modifier.padding(8.dp, bottom = 0.dp)
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(backgroundColor, RoundedCornerShape(14.dp))
-                    .padding(horizontal = 8.dp, vertical = 0.dp)
-            ) {
-                Column {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = stringResource(R.string.less),
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = labelTextColor,
-                                fontFamily = FontFamily(Font(R.font.sf_pro))
-                            )
-                        )
-                        Text(
-                            text = stringResource(R.string.more),
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = labelTextColor,
-                                fontFamily = FontFamily(Font(R.font.sf_pro))
-                            )
-                        )
-                    }
-                    AccessibilitySlider(
-                        valueRange = 0f..1f,
-                        value = ambientNoiseReductionSliderValue.floatValue,
-                        onValueChange = {
-                            ambientNoiseReductionSliderValue.floatValue = snapIfClose(it, listOf(0.1f, 0.3f, 0.5f, 0.7f, 0.9f))
-                        },
-                    )
-                }
-            }
+            StyledSlider(
+                valueRange = 0f..1f,
+                mutableFloatState = ambientNoiseReductionSliderValue,
+                onValueChange = {
+                    ambientNoiseReductionSliderValue.floatValue = it
+                },
+                startLabel = stringResource(R.string.less),
+                endLabel = stringResource(R.string.more),
+                independent = true,
+            )
 
             AccessibilityToggle(
                 text = stringResource(R.string.conversation_boost),
@@ -668,8 +505,6 @@ private fun parseHearingAidSettingsResponse(data: ByteArray): HearingAidSettings
     if (data.size < 104) return null
     val buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
 
-    val phoneEnabled = buffer.get() == 0x01.toByte()
-    val mediaEnabled = buffer.get() == 0x01.toByte()
     buffer.getShort() // skip 0x60 0x00
 
     val leftEQ = FloatArray(8)
@@ -718,7 +553,7 @@ private fun parseHearingAidSettingsResponse(data: ByteArray): HearingAidSettings
 
 private fun sendHearingAidSettings(
     attManager: ATTManager,
-    HearingAidSettings: HearingAidSettings
+    hearingAidSettings: HearingAidSettings
 ) {
     debounceJob?.cancel()
     debounceJob = CoroutineScope(Dispatchers.IO).launch {
@@ -736,19 +571,19 @@ private fun sendHearingAidSettings(
             buffer.put(2, 0x64)
 
             // Left ear adjustments
-            buffer.putFloat(36, HearingAidSettings.leftAmplification)
-            buffer.putFloat(40, HearingAidSettings.leftTone)
-            buffer.putFloat(44, if (HearingAidSettings.leftConversationBoost) 1.0f else 0.0f)
-            buffer.putFloat(48, HearingAidSettings.leftAmbientNoiseReduction)
+            buffer.putFloat(36, hearingAidSettings.leftAmplification)
+            buffer.putFloat(40, hearingAidSettings.leftTone)
+            buffer.putFloat(44, if (hearingAidSettings.leftConversationBoost) 1.0f else 0.0f)
+            buffer.putFloat(48, hearingAidSettings.leftAmbientNoiseReduction)
 
             // Right ear adjustments
-            buffer.putFloat(84, HearingAidSettings.rightAmplification)
-            buffer.putFloat(88, HearingAidSettings.rightTone)
-            buffer.putFloat(92, if (HearingAidSettings.rightConversationBoost) 1.0f else 0.0f)
-            buffer.putFloat(96, HearingAidSettings.rightAmbientNoiseReduction)
+            buffer.putFloat(84, hearingAidSettings.rightAmplification)
+            buffer.putFloat(88, hearingAidSettings.rightTone)
+            buffer.putFloat(92, if (hearingAidSettings.rightConversationBoost) 1.0f else 0.0f)
+            buffer.putFloat(96, hearingAidSettings.rightAmbientNoiseReduction)
 
             // Own voice amplification
-            buffer.putFloat(100, HearingAidSettings.ownVoiceAmplification)
+            buffer.putFloat(100, hearingAidSettings.ownVoiceAmplification)
 
             Log.d(TAG, "Sending updated settings: ${currentData.joinToString(" ") { String.format("%02X", it) }}")
 
@@ -757,9 +592,4 @@ private fun sendHearingAidSettings(
             e.printStackTrace()
         }
     }
-}
-
-private fun snapIfClose(value: Float, points: List<Float>, threshold: Float = 0.05f): Float {
-    val nearest = points.minByOrNull { kotlin.math.abs(it - value) } ?: value
-    return if (kotlin.math.abs(nearest - value) <= threshold) nearest else value
 }

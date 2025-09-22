@@ -84,14 +84,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import dev.chrisbanes.haze.HazeEffectScope
-import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.CupertinoMaterials
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 import me.kavishdevar.librepods.R
-import me.kavishdevar.librepods.CustomDevice
 import me.kavishdevar.librepods.composables.AudioSettings
 import me.kavishdevar.librepods.composables.BatteryView
 import me.kavishdevar.librepods.composables.CallControlSettings
@@ -146,7 +145,7 @@ fun AirPodsSettingsScreen(dev: BluetoothDevice?, service: AirPodsService,
     }
 
     val verticalScrollState  = rememberScrollState()
-    val hazeState = remember { HazeState() }
+    val hazeState = rememberHazeState( blurEnabled = true )
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
@@ -250,7 +249,8 @@ fun AirPodsSettingsScreen(dev: BluetoothDevice?, service: AirPodsService,
                         block = fun HazeEffectScope.() {
                             alpha =
                                 if (verticalScrollState.value > 60.dp.value * mDensity.floatValue) 1f else 0f
-                        })
+                        }
+                    )
                     .drawBehind {
                         mDensity.floatValue = density
                         val strokeWidth = 0.7.dp.value * density
@@ -364,7 +364,7 @@ fun AirPodsSettingsScreen(dev: BluetoothDevice?, service: AirPodsService,
                     NoiseControlSettings(service = service)
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    CallControlSettings()
+                    CallControlSettings(hazeState = hazeState)
 
                     // camera control goes here, airpods side is done, i just need to figure out how to listen to app open/close events
 
@@ -378,7 +378,7 @@ fun AirPodsSettingsScreen(dev: BluetoothDevice?, service: AirPodsService,
                     ConnectionSettings()
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    MicrophoneSettings()
+                    MicrophoneSettings(hazeState)
 
                     Spacer(modifier = Modifier.height(16.dp))
                     IndependentToggle(
@@ -388,15 +388,12 @@ fun AirPodsSettingsScreen(dev: BluetoothDevice?, service: AirPodsService,
                         default = false,
                         controlCommandIdentifier = AACPManager.Companion.ControlCommandIdentifiers.SLEEP_DETECTION_CONFIG
                     )
-                
+
                     Spacer(modifier = Modifier.height(16.dp))
                     NavigationButton(to = "head_tracking", stringResource(R.string.head_gestures), navController)
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    NavigationButton(to = "", "Accessibility", navController = navController, onClick = {
-                        val intent = Intent(context, CustomDevice::class.java)
-                        context.startActivity(intent)
-                    })
+                    NavigationButton(to = "accessibility", "Accessibility", navController = navController)
 
                     Spacer(modifier = Modifier.height(16.dp))
                     IndependentToggle(
