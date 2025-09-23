@@ -75,15 +75,6 @@
         </receiver>
 
         <activity
-            android:name=".CustomDevice"
-            android:exported="true"
-            android:label="@string/title_activity_custom_device"
-            android:theme="@style/Theme.LibrePods">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.LibrePods">
