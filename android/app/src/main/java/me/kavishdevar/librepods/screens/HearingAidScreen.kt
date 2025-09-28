@@ -222,41 +222,43 @@ fun HearingAidScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            StyledToggle(
-                title = stringResource(R.string.media_assist),
-                label = stringResource(R.string.media_assist),
-                checkedState = mediaAssistEnabled,
-                independent = true,
-                description = stringResource(R.string.media_assist_description)
-            )
+            // not implemented yet
 
-            Spacer(modifier = Modifier.height(8.dp))
+            // StyledToggle(
+            //     title = stringResource(R.string.media_assist),
+            //     label = stringResource(R.string.media_assist),
+            //     checkedState = mediaAssistEnabled,
+            //     independent = true,
+            //     description = stringResource(R.string.media_assist_description)
+            // )
 
-            Column (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(backgroundColor, RoundedCornerShape(28.dp))
-            ) {
-                StyledToggle(
-                    label = stringResource(R.string.adjust_media),
-                    checkedState = adjustMediaEnabled,
-                    onCheckedChange = { onAdjustMediaChange(it) },
-                    independent = false
-                )
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = Color(0x40888888),
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                )
+            // Spacer(modifier = Modifier.height(8.dp))
 
-                StyledToggle(
-                    label = stringResource(R.string.adjust_calls),
-                    checkedState = adjustPhoneEnabled,
-                    onCheckedChange = { onAdjustPhoneChange(it) },
-                    independent = false
-                )
-            }
+            // Column (
+            //     modifier = Modifier
+            //         .fillMaxWidth()
+            //         .background(backgroundColor, RoundedCornerShape(28.dp))
+            // ) {
+            //     StyledToggle(
+            //         label = stringResource(R.string.adjust_media),
+            //         checkedState = adjustMediaEnabled,
+            //         onCheckedChange = { onAdjustMediaChange(it) },
+            //         independent = false
+            //     )
+            //     HorizontalDivider(
+            //         thickness = 1.dp,
+            //         color = Color(0x40888888),
+            //         modifier = Modifier
+            //             .padding(horizontal = 12.dp)
+            //     )
+
+            //     StyledToggle(
+            //         label = stringResource(R.string.adjust_calls),
+            //         checkedState = adjustPhoneEnabled,
+            //         onCheckedChange = { onAdjustPhoneChange(it) },
+            //         independent = false
+            //     )
+            // }
         }
     }
 
