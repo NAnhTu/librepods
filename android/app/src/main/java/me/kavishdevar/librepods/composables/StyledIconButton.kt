@@ -124,7 +124,7 @@ half4 main(float2 coord) {
             .drawBackdrop(
                 backdrop = backdrop,
                 shape = { RoundedCornerShape(56.dp) },
-                highlight = { Highlight.AmbientDefault.copy(alpha = if (isDarkTheme) 1f else 0f) },
+                highlight = { Highlight.Ambient.copy(alpha = if (isDarkTheme) 1f else 0f) },
                 shadow = {
                     Shadow(
                         radius = 48f.dp,

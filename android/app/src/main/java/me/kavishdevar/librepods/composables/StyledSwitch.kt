@@ -176,7 +176,7 @@ fun StyledSwitch(
                     { RoundedCornerShape(thumbHeight / 2) },
                     highlight = {
                         val progress = progressAnimation.value
-                        Highlight.AmbientDefault.copy(
+                        Highlight.Ambient.copy(
                             alpha = progress
                         )
                     },

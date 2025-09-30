@@ -310,7 +310,7 @@ fun AirPodsSettingsScreen(dev: BluetoothDevice?, service: AirPodsService,
                         exportedBackdrop = backdrop,
                         shape = { RoundedCornerShape(0.dp) },
                         highlight = {
-                            Highlight.AmbientDefault.copy(alpha = 0f)
+                            Highlight.Ambient.copy(alpha = 0f)
                         }
                     )
                     .padding(horizontal = 8.dp),

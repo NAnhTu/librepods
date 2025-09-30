@@ -137,7 +137,7 @@ half4 main(float2 coord) {
                             }
                         },
                         onDrawFront = null,
-                        highlight = { Highlight.AmbientDefault.copy(alpha = 0f) }
+                        highlight = { Highlight.Ambient.copy(alpha = 0f) }
                     )
                 } else {
                     Modifier.drawBackdrop(

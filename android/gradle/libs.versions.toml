@@ -16,6 +16,7 @@ dynamicanimation = "1.1.0"
 foundationLayout = "1.9.1"
 uiTooling = "1.9.1"
 mockk = "1.14.3"
+ui = "1.9.2"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -37,6 +38,7 @@ androidx-dynamicanimation = { group = "androidx.dynamicanimation", name = "dynam
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
