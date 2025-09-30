@@ -63,6 +63,9 @@ object MediaController {
 
     var recentlyLostOwnership: Boolean = false
 
+    private var lastPlayWithReplay: Boolean = false
+    private var lastPlayTime: Long = 0L
+
     fun initialize(audioManager: AudioManager, sharedPreferences: SharedPreferences) {
         if (this::audioManager.isInitialized) {
             return
@@ -101,6 +104,14 @@ object MediaController {
             val isActive = audioManager.isMusicActive
             Log.d("MediaController", "Playback config changed, iPausedTheMedia: $iPausedTheMedia, isActive: $isActive, pausedForOtherDevice: $pausedForOtherDevice, lastKnownIsMusicActive: $lastKnownIsMusicActive")
 
+            if (!isActive && lastPlayWithReplay && now - lastPlayTime < 2500L) {
+                Log.d("MediaController", "Music paused shortly after play with replay; retrying play")
+                lastPlayWithReplay = false
+                sendPlay()
+                lastKnownIsMusicActive = true
+                return
+            }
+
             if (now - lastPlaybackCallbackAt < PLAYBACK_DEBOUNCE_MS) {
                 Log.d("MediaController", "Ignoring playback callback due to debounce (${now - lastPlaybackCallbackAt}ms)")
                 lastPlaybackCallbackAt = now
@@ -114,20 +125,42 @@ object MediaController {
                 return
             }
 
+            Log.d("MediaController", "Configs received: ${configs?.size ?: 0} configurations")
+            val currentActiveContentTypes = configs?.flatMap { config ->
+                Log.d("MediaController", "Processing config: ${config}, audioAttributes: ${config.audioAttributes}")
+                config.audioAttributes?.let { attrs ->
+                    val contentType = attrs.contentType
+                    Log.d("MediaController", "Config content type: $contentType")
+                    listOf(contentType)
+                } ?: run {
+                    Log.d("MediaController", "Config has no audioAttributes")
+                    emptyList()
+                }
+            }?.toSet() ?: emptySet()
+
+            Log.d("MediaController", "Current active content types: $currentActiveContentTypes")
+
+            val hasNewMusicOrMovie = currentActiveContentTypes.any { contentType ->
+                contentType == android.media.AudioAttributes.CONTENT_TYPE_MUSIC ||
+                contentType == android.media.AudioAttributes.CONTENT_TYPE_MOVIE
+            }
+
+            Log.d("MediaController", "Has new music or movie: $hasNewMusicOrMovie")
+
             if (pausedForOtherDevice) {
                 handler.removeCallbacks(clearPausedForOtherDeviceRunnable)
                 handler.postDelayed(clearPausedForOtherDeviceRunnable, PAUSED_FOR_OTHER_DEVICE_CLEAR_MS)
 
                 if (isActive) {
                     Log.d("MediaController", "Detected play while pausedForOtherDevice; attempting to take over")
-                    if (!recentlyLostOwnership) {
+                    if (!recentlyLostOwnership && hasNewMusicOrMovie) {
                         pausedForOtherDevice = false
                         userPlayedTheMedia = true
                         if (!pausedWhileTakingOver) {
                             ServiceManager.getService()?.takeOver("music")
                         }
                     } else {
-                        Log.d("MediaController", "Skipping take-over due to recent ownership loss")
+                        Log.d("MediaController", "Skipping take-over due to recent ownership loss or no new music/movie")
                     }
                 } else {
                     Log.d("MediaController", "Still not active while pausedForOtherDevice; will clear state after timeout")
@@ -152,10 +185,10 @@ object MediaController {
             }
 
             Log.d("MediaController", "pausedWhileTakingOver: $pausedWhileTakingOver")
-            if (!pausedWhileTakingOver && isActive) {
+            if (!pausedWhileTakingOver && isActive && hasNewMusicOrMovie) {
                 if (lastKnownIsMusicActive != true) {
                     if (!recentlyLostOwnership) {
-                        Log.d("MediaController", "Music is active and not pausedWhileTakingOver; requesting takeOver")
+                        Log.d("MediaController", "Music/movie is active and not pausedWhileTakingOver; requesting takeOver")
                         ServiceManager.getService()?.takeOver("music")
                     } else {
                         Log.d("MediaController", "Skipping take-over due to recent ownership loss")
@@ -242,9 +275,13 @@ object MediaController {
     }
 
     @Synchronized
-    fun sendPlay() {
-        Log.d("MediaController", "Sending play with iPausedTheMedia: $iPausedTheMedia")
-        if (iPausedTheMedia) {
+    fun sendPlay(replayWhenPaused: Boolean = false, force: Boolean = false) {
+        Log.d("MediaController", "Sending play with iPausedTheMedia: $iPausedTheMedia, replayWhenPaused: $replayWhenPaused, force: $force")
+        if (replayWhenPaused) {
+            lastPlayWithReplay = true
+            lastPlayTime = SystemClock.uptimeMillis()
+        }
+        if (iPausedTheMedia || force) { // very creative, ik. thanks.
             Log.d("MediaController", "Sending play and setting userPlayedTheMedia to false")
             userPlayedTheMedia = false
             audioManager.dispatchMediaKeyEvent(

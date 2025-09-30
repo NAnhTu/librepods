@@ -653,7 +653,7 @@ class IslandWindow(private val context: Context) {
             try {
                 context.unregisterReceiver(batteryReceiver)
             } catch (e: Exception) {
-                e.printStackTrace()
+//                e.printStackTrace()
             }
 
             ServiceManager.getService()?.islandOpen = false

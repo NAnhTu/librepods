@@ -110,7 +110,7 @@ fun BatteryView(service: AirPodsService, preview: Boolean = false) {
     if (preview) {
         batteryStatus.value = listOf(
             Battery(BatteryComponent.LEFT, 100, BatteryStatus.NOT_CHARGING),
-            Battery(BatteryComponent.RIGHT, 94, BatteryStatus.NOT_CHARGING),
+            Battery(BatteryComponent.RIGHT, 94, BatteryStatus.CHARGING),
             Battery(BatteryComponent.CASE, 40, BatteryStatus.CHARGING)
         )
         previousBatteryStatus.value = batteryStatus.value
@@ -177,7 +177,7 @@ fun BatteryView(service: AirPodsService, preview: Boolean = false) {
                     }
                     if (leftLevel > 0 && rightLevel > 0)
                     {
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(16.dp))
                     }
                     if (rightLevel > 0 || right?.status != BatteryStatus.DISCONNECTED)
                     {

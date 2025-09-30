@@ -69,6 +69,7 @@ class BLEManager(private val context: Context) {
         fun onLidStateChanged(lidOpen: Boolean)
         fun onEarStateChanged(device: AirPodsStatus, leftInEar: Boolean, rightInEar: Boolean)
         fun onBatteryChanged(device: AirPodsStatus)
+        fun onDeviceDisappeared()
     }
 
     private var mBluetoothLeScanner: BluetoothLeScanner? = null
@@ -335,7 +336,7 @@ class BLEManager(private val context: Context) {
         val model = modelNames[modelId] ?: "Unknown ($modelId)"
 
         val status = data[5].toInt() and 0xFF
-        val flagsCase = data[7].toInt() and 0xFF
+//        val flagsCase = data[7].toInt() and 0xFF
         val lid = data[8].toInt() and 0xFF
         val color = colorNames[data[9].toInt()] ?: "Unknown"
         val conn = connStates[data[10].toInt()] ?: "Unknown (${data[10].toInt()})"
@@ -395,6 +396,10 @@ class BLEManager(private val context: Context) {
         for (device in staleDevices) {
             deviceStatusMap.remove(device.key)
             Log.d(TAG, "Removed stale device from tracking: ${device.key}")
+        }
+
+        if (deviceStatusMap.isEmpty()) {
+            airPodsStatusListener?.onDeviceDisappeared()
         }
     }
 
@@ -483,8 +488,8 @@ class BLEManager(private val context: Context) {
 
     companion object {
         private const val TAG = "AirPodsBLE"
-        private const val CLEANUP_INTERVAL_MS = 30000L
-        private const val STALE_DEVICE_TIMEOUT_MS = 60000L
-        private const val LID_CLOSE_TIMEOUT_MS = 2000L
+        private const val CLEANUP_INTERVAL_MS = 10000L
+        private const val STALE_DEVICE_TIMEOUT_MS = 15000L
+        private const val LID_CLOSE_TIMEOUT_MS = 2500L
     }
 }
