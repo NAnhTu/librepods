@@ -193,15 +193,7 @@ fun AppSettingsScreen(navController: NavController) {
     val backdrop = rememberLayerBackdrop()
 
     StyledScaffold(
-        title = stringResource(R.string.app_settings),
-        navigationButton = {
-            StyledIconButton(
-                onClick = { navController.popBackStack() },
-                icon = "􀯶",
-                darkMode = isDarkTheme,
-                backdrop = backdrop
-            )
-        }
+        title = stringResource(R.string.app_settings)
     ) { spacerHeight, hazeState ->
         Column(
             modifier = Modifier

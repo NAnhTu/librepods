@@ -200,14 +200,16 @@ fun AirPodsSettingsScreen(dev: BluetoothDevice?, service: AirPodsService,
     val backdrop = rememberLayerBackdrop()
     StyledScaffold(
         title = deviceName.text,
-        actionButtons = listOf {
-            StyledIconButton(
-                onClick = { navController.navigate("app_settings") },
-                icon = "􀍟",
-                darkMode = darkMode,
-                backdrop = backdrop
-            )
-        },
+        actionButtons = listOf(
+            {scaffoldBackdrop ->
+                StyledIconButton(
+                    onClick = { navController.navigate("app_settings") },
+                    icon = "􀍟",
+                    darkMode = darkMode,
+                    backdrop = scaffoldBackdrop
+                )
+            }
+        ),
         snackbarHostState = snackbarHostState
     ) { spacerHeight, hazeState ->
         if (isLocallyConnected || isRemotelyConnected) {

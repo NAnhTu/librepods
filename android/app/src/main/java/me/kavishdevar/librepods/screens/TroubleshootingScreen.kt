@@ -216,15 +216,7 @@ fun TroubleshootingScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize()
     ) {
         StyledScaffold(
-            title = stringResource(R.string.troubleshooting),
-            navigationButton = {
-                StyledIconButton(
-                    onClick = { navController.popBackStack() },
-                    icon = "􀯶",
-                    darkMode = isDarkTheme,
-                    backdrop = backdrop
-                )
-            }
+            title = stringResource(R.string.troubleshooting)
         ){ spacerHeight, hazeState ->
             Column(
                 modifier = Modifier

@@ -106,17 +106,27 @@ fun StyledSwitch(
         compositingStrategy = CompositingStrategy.Offscreen
     }
     val animatedTrackColor = remember { Animatable(if (checked) onColor else offColor) }
+    val totalDrag = remember { mutableFloatStateOf(0f) }
+    val tapThreshold = 10f
+    val isFirstComposition = remember { mutableStateOf(true) }
     LaunchedEffect(checked) {
-        coroutineScope {
-            launch {
-                val targetColor = if (checked) onColor else offColor
-                animatedTrackColor.animateTo(targetColor, colorAnimationSpec)
-            }
-            launch {
-                val targetFrac = if (checked) 1f else 0f
-                animatedFraction.animateTo(targetFrac, progressAnimationSpec)
+        if (!isFirstComposition.value) {
+            coroutineScope {
+                launch {
+                    val targetColor = if (checked) onColor else offColor
+                    animatedTrackColor.animateTo(targetColor, colorAnimationSpec)
+                }
+                launch {
+                    val targetFrac = if (checked) 1f else 0f
+                    animatedFraction.animateTo(targetFrac, progressAnimationSpec)
+                }
+                launch {
+                    progressAnimation.animateTo(1f, tween(100, easing = FastOutSlowInEasing))
+                    progressAnimation.animateTo(0f, tween(100, easing = FastOutSlowInEasing))
+                }
             }
         }
+        isFirstComposition.value = false
     }
 
     Box(
@@ -147,6 +157,7 @@ fun StyledSwitch(
                             animationScope.launch {
                                 animatedFraction.snapTo(newFraction)
                             }
+                            totalDrag.floatValue += kotlin.math.abs(delta)
                             val newChecked = newFraction >= 0.5f
                             if (newChecked != checked) {
                                 onCheckedChange(newChecked)
@@ -156,17 +167,28 @@ fun StyledSwitch(
                     Orientation.Horizontal,
                     startDragImmediately = true,
                     onDragStarted = {
+                        totalDrag.floatValue = 0f
                         animationScope.launch {
                             progressAnimation.animateTo(1f, progressAnimationSpec)
                         }
                     },
                     onDragStopped = {
                         animationScope.launch {
-                            val snappedFraction = if (animatedFraction.value >= 0.5f) 1f else 0f
-                            onCheckedChange(snappedFraction >= 0.5f)
-                            coroutineScope {
-                                launch { progressAnimation.animateTo(0f, progressAnimationSpec) }
-                                launch { animatedFraction.animateTo(snappedFraction, progressAnimationSpec) }
+                            if (totalDrag.floatValue < tapThreshold) {
+                                val newChecked = !checked
+                                onCheckedChange(newChecked)
+                                val snappedFraction = if (newChecked) 1f else 0f
+                                coroutineScope {
+                                    launch { progressAnimation.animateTo(0f, progressAnimationSpec) }
+                                    launch { animatedFraction.animateTo(snappedFraction, progressAnimationSpec) }
+                                }
+                            } else {
+                                val snappedFraction = if (animatedFraction.value >= 0.5f) 1f else 0f
+                                onCheckedChange(snappedFraction >= 0.5f)
+                                coroutineScope {
+                                    launch { progressAnimation.animateTo(0f, progressAnimationSpec) }
+                                    launch { animatedFraction.animateTo(snappedFraction, progressAnimationSpec) }
+                                }
                             }
                         }
                     }

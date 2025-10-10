@@ -100,15 +100,7 @@ fun TransparencySettingsScreen(navController: NavController) {
     val backdrop = rememberLayerBackdrop()
 
     StyledScaffold(
-        title = stringResource(R.string.customize_transparency_mode),
-        navigationButton = {
-            StyledIconButton(
-                onClick = { navController.popBackStack() },
-                icon = "􀯶",
-                darkMode = isDarkTheme,
-                backdrop = backdrop
-            )
-        }
+        title = stringResource(R.string.customize_transparency_mode)
     ){ spacerHeight, hazeState ->
         Column(
             modifier = Modifier

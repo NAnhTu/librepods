@@ -66,15 +66,7 @@ fun OpenSourceLicensesScreen(navController: NavController) {
     val backdrop = rememberLayerBackdrop()
 
     StyledScaffold(
-        title = stringResource(R.string.open_source_licenses),
-        navigationButton = {
-            StyledIconButton(
-                onClick = { navController.popBackStack() },
-                icon = "􀯶",
-                darkMode = isDarkTheme,
-                backdrop = backdrop
-            )
-        }
+        title = stringResource(R.string.open_source_licenses)
     ) { spacerHeight ->
         Column(
             modifier = Modifier

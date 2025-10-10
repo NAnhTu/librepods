@@ -327,16 +327,8 @@ fun DebugScreen(navController: NavController) {
     val backdrop = rememberLayerBackdrop()
     StyledScaffold(
         title = "Debug",
-        navigationButton = {
-            StyledIconButton(
-                onClick = { navController.popBackStack() },
-                icon = "􀯶",
-                darkMode = isDarkTheme,
-                backdrop = backdrop
-            )
-        },
         actionButtons = listOf(
-            {
+            {scaffoldBackdrop ->
                 StyledIconButton(
                     onClick = {
                         airPodsService?.clearLogs()
@@ -344,7 +336,7 @@ fun DebugScreen(navController: NavController) {
                     },
                     icon = "􀈑",
                     darkMode = isDarkTheme,
-                    backdrop = backdrop
+                    backdrop = scaffoldBackdrop
                 )
             }
         ),

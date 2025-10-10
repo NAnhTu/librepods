@@ -122,15 +122,7 @@ fun LongPress(navController: NavController, name: String) {
     var longPressAction by remember { mutableStateOf(StemAction.valueOf(longPressActionPref ?: StemAction.CYCLE_NOISE_CONTROL_MODES.name)) }
     val backdrop = rememberLayerBackdrop()
     StyledScaffold(
-        title = name,
-        navigationButton = {
-            StyledIconButton(
-                onClick = { navController.popBackStack() },
-                icon = "􀯶",
-                darkMode = isDarkTheme,
-                backdrop = backdrop
-            )
-        }
+        title = name
     ) { spacerHeight ->
         val backgroundColor = if (isDarkTheme) Color(0xFF1C1C1E) else Color(0xFFFFFFFF)
         Column (

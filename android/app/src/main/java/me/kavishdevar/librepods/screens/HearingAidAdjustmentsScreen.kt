@@ -81,15 +81,7 @@ fun HearingAidAdjustmentsScreen(@Suppress("unused") navController: NavController
     val aacpManager = remember { ServiceManager.getService()?.aacpManager }
     val backdrop = rememberLayerBackdrop()
     StyledScaffold(
-        title = stringResource(R.string.adjustments),
-        navigationButton = {
-            StyledIconButton(
-                onClick = { navController.popBackStack() },
-                icon = "􀯶",
-                darkMode = isDarkTheme,
-                backdrop = backdrop
-            )
-        }
+        title = stringResource(R.string.adjustments)
     ) { spacerHeight ->
         Column(
             modifier = Modifier

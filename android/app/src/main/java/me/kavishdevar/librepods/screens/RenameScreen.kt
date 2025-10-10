@@ -87,14 +87,6 @@ fun RenameScreen(navController: NavController) {
 
     StyledScaffold(
         title = stringResource(R.string.name),
-        navigationButton = {
-            StyledIconButton(
-                onClick = { navController.popBackStack() },
-                icon = "􀯶",
-                darkMode = isDarkTheme,
-                backdrop = backdrop
-            )
-        },
     ) { spacerHeight ->
         Column(
             modifier = Modifier

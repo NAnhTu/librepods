@@ -101,15 +101,6 @@ fun HearingAidScreen(navController: NavController) {
 
     StyledScaffold(
         title = stringResource(R.string.hearing_aid),
-        navigationButton = {
-            StyledIconButton(
-                onClick = { navController.popBackStack() },
-                icon = "􀯶",
-                darkMode = isDarkTheme,
-                backdrop = backdrop
-            )
-        },
-        actionButtons = emptyList(),
         snackbarHostState = snackbarHostState,
     ) { spacerHeight ->
         Column(

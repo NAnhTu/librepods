@@ -130,15 +130,7 @@ fun CameraControlScreen(navController: NavController) {
     val backdrop = rememberLayerBackdrop()
 
     StyledScaffold(
-        title = stringResource(R.string.camera_control),
-        navigationButton = {
-            StyledIconButton(
-                onClick = { navController.popBackStack() },
-                icon = "􀯶",
-                darkMode = isDarkTheme,
-                backdrop = backdrop
-            )
-        }
+        title = stringResource(R.string.camera_control)
     ) { spacerHeight ->
         Column(
             modifier = Modifier

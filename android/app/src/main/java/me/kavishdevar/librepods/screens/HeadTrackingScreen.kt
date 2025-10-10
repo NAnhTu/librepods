@@ -121,18 +121,10 @@ fun HeadTrackingScreen(navController: NavController) {
 
     val scrollState = rememberScrollState()
     val backdrop = rememberLayerBackdrop()
-    StyledScaffold (
+    StyledScaffold(
         title = stringResource(R.string.head_tracking),
-        navigationButton = {
-            StyledIconButton(
-                onClick = { navController.popBackStack() },
-                icon = "􀯶",
-                darkMode = isDarkTheme,
-                backdrop = backdrop
-            )
-        },
         actionButtons = listOf(
-            {
+            { scaffoldBackdrop ->
                var isActive by remember { mutableStateOf(ServiceManager.getService()?.isHeadTrackingActive == true) }
                 StyledIconButton(
                     onClick = {
@@ -146,7 +138,7 @@ fun HeadTrackingScreen(navController: NavController) {
                     },
                     icon = if (isActive) "􀊅" else "􀊃",
                     darkMode = isDarkTheme,
-                    backdrop = backdrop
+                    backdrop = scaffoldBackdrop
                 )
             }
         ),

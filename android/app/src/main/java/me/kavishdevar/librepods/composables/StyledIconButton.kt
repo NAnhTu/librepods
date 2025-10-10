@@ -127,8 +127,8 @@ half4 main(float2 coord) {
                 highlight = { Highlight.Ambient.copy(alpha = if (isDarkTheme) 1f else 0f) },
                 shadow = {
                     Shadow(
-                        radius = 48f.dp,
-                        color = Color.Black.copy(if (isDarkTheme) 0.08f else 0.4f)
+                        radius = 12f.dp,
+                        color = Color.Black.copy(if (isDarkTheme) 0.08f else 0.2f)
                     )
                 },
                 layerBlock = {
@@ -136,8 +136,7 @@ half4 main(float2 coord) {
                     val height = size.height
 
                     val progress = progressAnimation.value
-                    val maxScale = 0.1f
-                    val scale = lerp(1f, 1f + maxScale, progress)
+                    val scale = lerp(1f, 1.5f, progress)
 
                     val maxOffset = size.minDimension
                     val initialDerivative = 0.05f
@@ -220,7 +219,7 @@ half4 main(float2 coord) {
                 },
                 effects = {
                     refractionWithDispersion(6f.dp.toPx(), size.height / 2f)
-                    blur(24f, TileMode.Decal)
+                    // blur(24f, TileMode.Decal)
                 },
             )
             .pointerInput(animationScope) {

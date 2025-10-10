@@ -157,14 +157,14 @@ fun Onboarding(navController: NavController, activityContext: Context) {
     StyledScaffold(
         title = "Setting Up",
         actionButtons = listOf(
-            {
+            {scaffoldBackdrop ->
                 StyledIconButton(
                     onClick = {
                         showSkipDialog = true
                     },
                     icon = "􀊋",
                     darkMode = isDarkTheme,
-                    backdrop = backdrop
+                    backdrop = scaffoldBackdrop
                 )
             }
         )
