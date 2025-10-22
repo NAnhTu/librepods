@@ -1832,7 +1832,7 @@ class AirPodsService : Service(), SharedPreferences.OnSharedPreferenceChangeList
             updatedNotification = NotificationCompat.Builder(this, "background_service_status")
                 .setSmallIcon(R.drawable.airpods)
                 .setContentTitle("AirPods not connected")
-                               .setContentText("Tap to open app")
+                .setContentText("Tap to open app")
                 .setContentIntent(pendingIntent)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -2179,7 +2179,6 @@ class AirPodsService : Service(), SharedPreferences.OnSharedPreferenceChangeList
 
     fun manuallyCheckForAudioSource() {
         val shouldResume = MediaController.getMusicActive()
-        if (airpodsInstance == null) return
         if ((earDetectionNotification.status[0] != 0.toByte() && earDetectionNotification.status[1] != 0.toByte()) || disconnectedBecauseReversed || otherDeviceTookOver) {
             Log.d(
                 TAG,
